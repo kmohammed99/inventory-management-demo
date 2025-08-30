@@ -1,0 +1,67 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://example.com/inventory"
+           xmlns:inv="http://example.com/inventory"
+           elementFormDefault="qualified">
+
+    <!-- Supplier -->
+    <xs:element name="createSupplierRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="email" type="xs:string"/>
+                <xs:element name="phone" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="createSupplierResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="supplierId" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Item -->
+    <xs:element name="createItemRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="sku" type="xs:string"/>
+                <xs:element name="supplierId" type="xs:long"/>
+                <xs:element name="minQuantity" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="createItemResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long"/>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="sku" type="xs:string"/>
+                <xs:element name="quantity" type="xs:int"/>
+                <xs:element name="minQuantity" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <!-- Stock Movement -->
+    <xs:element name="addStockMovementRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="itemId" type="xs:long"/>
+                <xs:element name="amount" type="xs:int"/>
+                <xs:element name="note" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addStockMovementResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="message" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
