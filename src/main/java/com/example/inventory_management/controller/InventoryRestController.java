@@ -27,31 +27,24 @@ public class InventoryRestController {
 
     @PostMapping("/suppliers")
     public ResponseEntity<SupplierDTO> createSupplier(@RequestBody SupplierDTO supplierDTO) {
-        Supplier supplier = inventoryService.createSupplier(supplierDTO.getName(), supplierDTO.getEmail(), supplierDTO.getPhone());
+        Supplier supplier = inventoryService.createSupplier(supplierDTO);
         SupplierDTO responseDTO = new SupplierDTO();
         responseDTO.setName(supplier.getName());
-        responseDTO.setEmail(supplier.getEmail());
-        responseDTO.setPhone(supplier.getPhone());
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
+
     @PostMapping("/items")
     public ResponseEntity<ItemDTO> createItem(@RequestBody ItemDTO itemDTO) {
-        Item item = inventoryService.createItem(itemDTO.getName(), itemDTO.getSku(), itemDTO.getSupplierId(), itemDTO.getMinQuantity());
+        Item item = inventoryService.createItem(itemDTO);
         ItemDTO responseDTO = new ItemDTO();
         responseDTO.setId(item.getId());
         responseDTO.setName(item.getName());
-        responseDTO.setSku(item.getSku());
-        responseDTO.setQuantity(item.getQuantity());
-        responseDTO.setMinQuantity(item.getMinQuantity());
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
+
     @PostMapping("/stock-movements")
     public ResponseEntity<String> addStockMovement(@RequestBody StockMovementDTO stockMovementDTO) {
-        String result = inventoryService.addStockMovement(
-                stockMovementDTO.getItemId(),
-                stockMovementDTO.getAmount(),
-                stockMovementDTO.getNote()
-        );
+        String result = inventoryService.addStockMovement(stockMovementDTO);
         return ResponseEntity.ok(result);
     }
 }

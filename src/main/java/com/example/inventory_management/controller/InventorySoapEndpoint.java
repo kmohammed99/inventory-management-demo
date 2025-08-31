@@ -1,8 +1,6 @@
 package com.example.inventory_management.controller;
 
-import com.example.inventory_management.dto.AddStockMovementResponse;
-import com.example.inventory_management.dto.CreateItemResponse;
-import com.example.inventory_management.dto.CreateSupplierResponse;
+import com.example.inventory_management.dto.*;
 import com.example.inventory_management.entity.Item;
 import com.example.inventory_management.entity.Supplier;
 import com.example.inventory_management.service.InventoryService;
@@ -31,12 +29,12 @@ public class InventorySoapEndpoint {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "createSupplierRequest")
     @ResponsePayload
     public JAXBElement<CreateSupplierResponse> createSupplier(@RequestPayload Element requestElement) {
-        String name = requestElement.getElementsByTagNameNS(NAMESPACE_URI, "name").item(0).getTextContent();
-        String email = requestElement.getElementsByTagNameNS(NAMESPACE_URI, "email").item(0).getTextContent();
-        String phone = requestElement.getElementsByTagNameNS(NAMESPACE_URI, "phone").item(0).getTextContent();
+        SupplierDTO supplierDTO = new SupplierDTO();
+        supplierDTO.setName(requestElement.getElementsByTagNameNS(NAMESPACE_URI, "name").item(0).getTextContent());
+        supplierDTO.setEmail(requestElement.getElementsByTagNameNS(NAMESPACE_URI, "email").item(0).getTextContent());
+        supplierDTO.setPhone(requestElement.getElementsByTagNameNS(NAMESPACE_URI, "phone").item(0).getTextContent());
 
-
-        Supplier supplier = inventoryService.createSupplier(name, email, phone);
+        Supplier supplier = inventoryService.createSupplier(supplierDTO);
 
         CreateSupplierResponse response = new CreateSupplierResponse();
         response.setSupplierId(supplier.getId());
@@ -49,11 +47,12 @@ public class InventorySoapEndpoint {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "createItemRequest")
     @ResponsePayload
     public JAXBElement<CreateItemResponse> createItem(@RequestPayload Element requestElement) {
-        String name = requestElement.getElementsByTagNameNS(NAMESPACE_URI, "name").item(0).getTextContent();
-        String sku = requestElement.getElementsByTagNameNS(NAMESPACE_URI, "sku").item(0).getTextContent();
-        Long supplierId = Long.parseLong(requestElement.getElementsByTagNameNS(NAMESPACE_URI, "supplierId").item(0).getTextContent());
-        int minQuantity = Integer.parseInt(requestElement.getElementsByTagNameNS(NAMESPACE_URI, "minQuantity").item(0).getTextContent());
-        Item item = inventoryService.createItem(name, sku, supplierId, minQuantity);
+        ItemDTO itemDTO = new ItemDTO();
+        itemDTO.setName(requestElement.getElementsByTagNameNS(NAMESPACE_URI, "name").item(0).getTextContent());
+        itemDTO.setSku(requestElement.getElementsByTagNameNS(NAMESPACE_URI, "sku").item(0).getTextContent());
+        itemDTO.setSupplierId(Long.parseLong(requestElement.getElementsByTagNameNS(NAMESPACE_URI, "supplierId").item(0).getTextContent()));
+        itemDTO.setMinQuantity(Integer.parseInt(requestElement.getElementsByTagNameNS(NAMESPACE_URI, "minQuantity").item(0).getTextContent()));
+        Item item = inventoryService.createItem(itemDTO);
 
         CreateItemResponse response = new CreateItemResponse();
         response.setId(item.getId());
@@ -65,14 +64,16 @@ public class InventorySoapEndpoint {
         QName qName = new QName(NAMESPACE_URI, "createItemResponse");
         return new JAXBElement<>(qName, CreateItemResponse.class, response);
     }
+
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "addStockMovementRequest")
     @ResponsePayload
     public JAXBElement<AddStockMovementResponse> addStockMovement(@RequestPayload Element requestElement) {
-        Long itemId = Long.parseLong(requestElement.getElementsByTagNameNS(NAMESPACE_URI, "itemId").item(0).getTextContent());
-        int amount = Integer.parseInt(requestElement.getElementsByTagNameNS(NAMESPACE_URI, "amount").item(0).getTextContent());
-        String note = requestElement.getElementsByTagNameNS(NAMESPACE_URI, "note").item(0).getTextContent();
+        StockMovementDTO stockMovementDTO = new StockMovementDTO();
+        stockMovementDTO.setItemId(Long.parseLong(requestElement.getElementsByTagNameNS(NAMESPACE_URI, "itemId").item(0).getTextContent()));
+        stockMovementDTO.setAmount(Integer.parseInt(requestElement.getElementsByTagNameNS(NAMESPACE_URI, "amount").item(0).getTextContent()));
+        stockMovementDTO.setNote(requestElement.getElementsByTagNameNS(NAMESPACE_URI, "note").item(0).getTextContent());
 
-        String result = inventoryService.addStockMovement(itemId, amount, note);
+        String result = inventoryService.addStockMovement(stockMovementDTO);
 
         AddStockMovementResponse response = new AddStockMovementResponse();
         response.setMessage(result);

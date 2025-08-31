@@ -1,5 +1,8 @@
 package com.example.inventory_management.service;
 
+import com.example.inventory_management.dto.ItemDTO;
+import com.example.inventory_management.dto.StockMovementDTO;
+import com.example.inventory_management.dto.SupplierDTO;
 import com.example.inventory_management.entity.Item;
 import com.example.inventory_management.entity.StockMovement;
 import com.example.inventory_management.entity.Supplier;
@@ -27,22 +30,22 @@ public class InventoryService {
         this.stockMovementRepo = stockMovementRepo;
     }
 
-    public Supplier createSupplier(String name, String email, String phone) {
+    public Supplier createSupplier(SupplierDTO supplierDTO) {
         Supplier supplier = new Supplier();
-        supplier.setName(name);
-        supplier.setEmail(email);
-        supplier.setPhone(phone);
+        supplier.setName(supplierDTO.getName());
+        supplier.setEmail(supplierDTO.getEmail());
+        supplier.setPhone(supplierDTO.getPhone());
         return supplierRepo.save(supplier);
     }
 
-    public Item createItem(String name, String sku, Long supplierId, int minQuantity) {
-        Supplier supplier = supplierRepo.findById(supplierId)
+    public Item createItem(ItemDTO itemDTO) {
+        Supplier supplier = supplierRepo.findById(itemDTO.getSupplierId())
                 .orElseThrow(() -> new IllegalArgumentException("Supplier not found"));
 
         Item item = new Item();
-        item.setName(name);
-        item.setSku(sku);
-        item.setMinQuantity(minQuantity);
+        item.setName(itemDTO.getName());
+        item.setSku(itemDTO.getSku());
+        item.setMinQuantity(itemDTO.getMinQuantity());
         item.setSupplier(supplier);
 
         return itemRepo.save(item);
@@ -52,17 +55,17 @@ public class InventoryService {
         return itemRepo.findAll();
     }
 
-    public String addStockMovement(Long itemId, int amount, String note) {
-        Item item = itemRepo.findById(itemId)
+    public String addStockMovement(StockMovementDTO stockMovementDTO) {
+        Item item = itemRepo.findById(stockMovementDTO.getItemId())
                 .orElseThrow(() -> new IllegalArgumentException("Item not found"));
 
-        item.setQuantity(item.getQuantity() + amount);
+        item.setQuantity(item.getQuantity() + stockMovementDTO.getAmount());
         itemRepo.save(item);
 
         StockMovement movement = new StockMovement();
         movement.setItem(item);
-        movement.setAmount(amount);
-        movement.setNote(note);
+        movement.setAmount(stockMovementDTO.getAmount());
+        movement.setNote(stockMovementDTO.getNote());
         stockMovementRepo.save(movement);
 
         if (item.getQuantity() < item.getMinQuantity()) {
